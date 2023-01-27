@@ -101,7 +101,7 @@ import Control.Exception (Exception, throwIO)
 import Data.Typeable (Typeable)
 import Control.Monad (void)
 import Text.Printf (printf)
-import Control.Concurrent (threadWaitRead, threadWaitWrite)
+import Control.Concurrent (threadWaitRead)
 import System.Posix.Types (Fd(..))
 
 
@@ -346,11 +346,11 @@ foreign import ccall safe "nn.h nn_shutdown"
 
 -- NN_EXPORT int nn_send (int s, const void *buf, size_t len, int flags);
 foreign import ccall safe "nn.h nn_send"
-    c_nn_send :: CInt -> CString -> CInt -> CInt -> IO CInt
+    c_nn_send :: CInt -> CString -> CSize -> CInt -> IO CInt
 
 -- NN_EXPORT int nn_recv (int s, void *buf, size_t len, int flags);
 foreign import ccall safe "nn.h nn_recv"
-    c_nn_recv :: CInt -> Ptr CString -> CInt -> CInt -> IO CInt
+    c_nn_recv :: CInt -> Ptr CString -> CSize -> CInt -> IO CInt
 
 -- NN_EXPORT int nn_freemsg (void *msg);
 foreign import ccall safe "nn.h nn_freemsg"
@@ -469,7 +469,7 @@ send (Socket t sid) string =
         throwErrnoIfMinus1RetryMayBlock_
             "send"
             (c_nn_send sid ptr (fromIntegral len) (#const NN_DONTWAIT))
-            (getOptionFd (Socket t sid) (#const NN_SNDFD) >>= threadWaitWrite)
+            (getOptionFd (Socket t sid) (#const NN_SNDFD) >>= threadWaitRead)
 
 -- | Blocking receive.
 recv :: Receiver a => Socket a -> IO ByteString
