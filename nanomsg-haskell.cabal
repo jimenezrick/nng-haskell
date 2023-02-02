@@ -1,9 +1,9 @@
-name:                nanomsg-haskell
-version:             0.2.4
+name:                nng-haskell
+version:             0.3.4
 synopsis:
-  Bindings to the nanomsg library
+  Bindings to the NNG library
 description:
-  This is a Haskell binding for the nanomsg library: <http://nanomsg.org/>.
+  This is a Haskell binding for the NNG library: <http://nng.nanomsg.org/>.
   .
   There's support for (evented) blocking send and recv, a non-blocking receive,
   and for all the socket types and the functions you need to wire
@@ -12,7 +12,7 @@ description:
   Most sockets options are available through accessor and mutator
   functions. Sockets are typed, transports are not.
 
-homepage:            https://github.com/ivarnymoen/nanomsg-haskell
+homepage:            https://github.com/jimenezrick/nng-haskell
 license:             MIT
 license-file:        LICENSE
 author:              Ivar Nymoen, Ben Gamari
@@ -22,7 +22,7 @@ category:            Network
 build-type:          Simple
 cabal-version:       >=1.10
 tested-with:
-  GHC == 7.10.2
+  GHC == 9.2.5
 extra-source-files:
   README.md
   , CONTRIBUTORS
@@ -78,7 +78,7 @@ library
 
 source-repository head
   type:              git
-  location:          https://github.com/ivarnymoen/nanomsg-haskell
+  location:          https://github.com/jimenezrick/nng-haskell
 
 benchmark send-messages
   type:              exitcode-stdio-1.0
@@ -89,7 +89,7 @@ benchmark send-messages
   build-depends:
     base >= 4.5 && < 5,
     bytestring >= 0.9.0,
-    nanomsg-haskell,
+    nng-haskell,
     criterion
 
 --benchmark vs-zeromq-bindings
