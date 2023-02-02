@@ -95,7 +95,6 @@ import Foreign.Ptr
 import Foreign.C.Types
 import Foreign.C.String
 import Foreign.Storable (sizeOf)
-import Control.Applicative ( (<$>) )
 import Control.Exception.Base (bracket)
 import Control.Exception (Exception, throwIO)
 import Data.Typeable (Typeable)

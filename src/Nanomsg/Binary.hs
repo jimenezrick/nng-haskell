@@ -67,7 +67,6 @@ module Nanomsg.Binary
 
   ) where
 
-import Control.Applicative
 import Nanomsg hiding (send,recv,recv')
 import qualified Nanomsg as NM
 import Data.Binary
