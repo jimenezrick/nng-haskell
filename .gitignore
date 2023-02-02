@@ -1,6 +1,1 @@
-/.cabal-sandbox/
-/cabal.sandbox.config
-/cabal-dev
-/dist
-*.swp
-
+/dist-newstyle/
