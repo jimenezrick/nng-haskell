@@ -366,11 +366,11 @@ foreign import ccall safe "nn.h nn_term"
 
 -- NN_EXPORT int nn_setsockopt (int s, int level, int option, const void *optval, size_t optvallen);
 foreign import ccall safe "nn.h nn_setsockopt"
-    c_nn_setsockopt :: CInt -> CInt -> CInt -> Ptr a -> CInt -> IO CInt
+    c_nn_setsockopt :: CInt -> CInt -> CInt -> Ptr a -> CSize -> IO CInt
 
 -- NN_EXPORT int nn_getsockopt (int s, int level, int option, void *optval, size_t *optvallen);
 foreign import ccall safe "nn.h nn_getsockopt"
-    c_nn_getsockopt :: CInt -> CInt -> CInt -> Ptr a -> Ptr CInt -> IO CInt
+    c_nn_getsockopt :: CInt -> CInt -> CInt -> Ptr a -> Ptr CSize -> IO CInt
 
 -- /*  Resolves system errors and native errors to human-readable string.        */
 -- NN_EXPORT const char *nn_strerror (int errnum);
@@ -533,13 +533,11 @@ data SocketOption = IntOption Int | StringOption ByteString
 
 -- Used for setting a socket option.
 setOption :: Socket a -> CInt -> CInt -> SocketOption -> IO ()
-
 setOption (Socket _ sid) level option (IntOption val) =
     alloca $ \ptr -> do
         poke ptr (fromIntegral val :: CInt)
-        let cintSize = fromIntegral $ sizeOf (fromIntegral val :: CInt) :: CInt
+        let cintSize = fromIntegral $ sizeOf (fromIntegral val :: CInt) :: CSize
         throwErrnoIfMinus1_ "setOption (int)" $ c_nn_setsockopt sid level option ptr cintSize
-
 setOption (Socket _ sid) level option (StringOption str) =
     throwErrnoIfMinus1_ "setOption (string)" <$> U.unsafeUseAsCStringLen str $
         \(ptr, len) -> c_nn_setsockopt sid level option ptr (fromIntegral len)
