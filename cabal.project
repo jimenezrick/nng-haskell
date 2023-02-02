@@ -1,8 +1,11 @@
 packages: .
-package nanomsg-haskell
-tests: False
-benchmarks: True
+
 package *
     debug-info: 2
-    profiling: True
+    optimization: 2
+    profiling: False
+
+tests: True
+benchmarks: True
+
 write-ghc-environment-files: always
