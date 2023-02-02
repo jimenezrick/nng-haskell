@@ -1,6 +1,12 @@
-# nanomsg-haskell
+# nng-haskell
 
-This is a Haskell binding for the nanomsg library: <http://nanomsg.org/>.
+This is a Haskell binding for the NNG library: <http://nng.nanomsg.org/>.
+
+It's based on the nanomsg bindings: https://github.com/bgamari/nanomsg-haskell.
+
+This bindings make use of the "compatibility API" from NNG to emulate the same API
+nanomsg has. Thus at the moment it doesn't offer the full functionality of NNG,
+but it should be easy to extend over time as it's needed.
 
 There's support for [(evented)](http://hackage.haskell.org/packages/archive/base/latest/doc/html/Control-Concurrent.html#v:threadWaitRead) blocking send and recv, a non-blocking receive,
 and for all the socket types and the functions you need to wire them up and
@@ -12,16 +18,8 @@ functions. Sockets are typed, transports are not.
 
 ## Building
 
-You would normally make sure the nanomsg library is on your system and then
-install from Hackage, but can build from source following these steps:
-
-  1. Build and install nanomsg (and zeromq, if you are building benchmarks)
-  1. git clone https://github.com/ivarnymoen/nanomsg-haskell
-  1. cd nanomsg-haskell && cabal sandbox init
-  1. cabal install --dependencies-only [--enable-tests] [--enable-benchmarks]
-  1. cabal configure [--enable-tests] [--enable-benchmarks]
-  1. cabal build
-  1. [cabal test]
+You would normally make sure the NNG library is on your system and then
+install from Hackage.
 
 
 ## Usage
