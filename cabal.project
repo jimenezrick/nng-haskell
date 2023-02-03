@@ -1,11 +1,11 @@
 packages: .
 
 package *
-    debug-info: 2
-    optimization: 2
     profiling: False
+    debug-info: True
+    optimization: 2
 
-tests: True
+tests: False
 benchmarks: True
 
 write-ghc-environment-files: always
