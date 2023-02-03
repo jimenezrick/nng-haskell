@@ -36,7 +36,7 @@ module Nanomsg
         -- ** Other
         , Socket
         , Endpoint
-        , NNException
+        , NNGException
         , SocketType
         , Sender
         , Receiver
@@ -142,7 +142,7 @@ data Sub = Sub
 -- onnected respondents. Once the query is sent, the socket can be used
 -- to receive the responses.
 --
--- When the survey deadline expires, receive will throw an NNException.
+-- When the survey deadline expires, receive will throw an NNGException.
 --
 -- See also 'Respondent', 'setSurveyorDeadline'.
 data Surveyor = Surveyor
@@ -245,22 +245,22 @@ instance Receiver Bus
 -- and strerror functions for the posix ones.
 
 -- | Pretty much any error condition throws this exception.
-data NNException = NNException String
+data NNGException = NNGException String
         deriving (Eq, Show, Typeable)
 
-instance Exception NNException
+instance Exception NNGException
 
 mkErrorString :: String -> IO String
 mkErrorString loc = do
     errNo <- c_nn_errno
     errCString <- c_nn_strerror errNo
     errString <- peekCString errCString
-    return $ printf "nanomsg-haskell error at %s. Errno %d: %s" loc (fromIntegral errNo :: Int) errString
+    return $ printf "NNG error at %s. Errno %d: %s" loc (fromIntegral errNo :: Int) errString
 
 throwErrno :: String -> IO a
 throwErrno loc = do
     s <- mkErrorString loc
-    throwIO $ NNException s
+    throwIO $ NNGException s
 
 throwErrnoIf :: (a -> Bool) -> String -> IO a -> IO a
 throwErrnoIf p loc action = do

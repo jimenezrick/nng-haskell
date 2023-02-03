@@ -21,7 +21,7 @@ module Nanomsg.Binary
   -- ** Other
   , Socket
   , Endpoint
-  , NNException
+  , NNGException
 --  , eTERM
 --  , eFSM
   , SocketType
