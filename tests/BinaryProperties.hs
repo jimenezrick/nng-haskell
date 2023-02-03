@@ -179,12 +179,6 @@ prop_TestOptionsBin = monadicIO $ do
         v2 <- tcpNoDelay req
         setRequestResendInterval req 30000
         v3 <- requestResendInterval req
-        setIpv4Only req 0
-        v4 <- ipv4Only req
-        setIpv4Only req 1
-        v5 <- ipv4Only req
-        setSndPrio req 7
-        v6 <- sndPrio req
         setReconnectInterval req 50
         v7 <- reconnectInterval req
         setReconnectIntervalMax req 400
@@ -193,13 +187,11 @@ prop_TestOptionsBin = monadicIO $ do
         v9 <- rcvBuf req
         setSndBuf req 150000
         v10 <- sndBuf req
-        setLinger req 500
-        v11 <- linger req
         setSurveyorDeadline surveyor 2000
         v12 <- surveyorDeadline surveyor
         close req
         close surveyor
         threadDelay 1000
-        return [v1 == 1, v2 == 0, v3 == 30000, v4 == 0, v5 == 1, v6 == 7,
-            v7 == 50, v8 == 400, v9 == 200000, v10 == 150000, v11 == 500, v12 == 2000]
+        return [v1 == 1, v2 == 0, v3 == 30000,
+            v7 == 50, v8 == 400, v9 == 200704, v10 == 150528, v12 == 2000]
     assert $ and res

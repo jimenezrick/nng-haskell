@@ -55,8 +55,6 @@ module Nanomsg
         , close
         , term
         -- ** Socket option settings
-        , linger
-        , setLinger
         , sndBuf
         , setSndBuf
         , rcvBuf
@@ -67,10 +65,6 @@ module Nanomsg
         , setReconnectInterval
         , reconnectIntervalMax
         , setReconnectIntervalMax
-        , sndPrio
-        , setSndPrio
-        , ipv4Only
-        , setIpv4Only
         , requestResendInterval
         , setRequestResendInterval
         , surveyorDeadline
@@ -513,9 +507,7 @@ unsubscribe (Socket t sid) string =
     setOption (Socket t sid) (socketType t) (#const NN_SUB_UNSUBSCRIBE) (StringOption string)
 
 -- | Closes the socket. Any buffered inbound messages that were not yet
--- received by the application will be discarded. The library will try to
--- deliver any outstanding outbound messages for the time specified by
--- NN_LINGER socket option. The call will block in the meantime.
+-- received by the application will be discarded.
 close :: Socket a -> IO ()
 close (Socket _ sid) =
     throwErrnoIfMinus1Retry_ "close" $ c_nn_close sid
@@ -568,22 +560,6 @@ getOptionFd (Socket _ sid) option =
             value <- peek ptr
             size <- peek sizePtr
             if fdSize /= size then throwErrno "getOptionFd: output size not as expected" else return value
-
--- | Specifies how long the socket should try to send pending outbound
--- messages after close has been called, in milliseconds.
---
--- Negative value means infinite linger. Default value is 1000 (1 second).
-linger :: Socket a -> IO Int
-linger s =
-    fromIntegral <$> getOption s (#const NN_SOL_SOCKET) (#const NN_LINGER)
-
--- | Specifies how long should the socket try to send pending outbound
--- messages after close has been called, in milliseconds.
---
--- Negative value means infinite linger. Default value is 1000 (1 second).
-setLinger :: Socket a -> Int -> IO ()
-setLinger s val =
-    setOption s (#const NN_SOL_SOCKET) (#const NN_LINGER) (IntOption val)
 
 -- | Size of the send buffer, in bytes. To prevent blocking for messages
 -- larger than the buffer, exactly one message may be buffered in addition
@@ -693,44 +669,6 @@ reconnectIntervalMax s =
 setReconnectIntervalMax :: Socket a -> Int -> IO ()
 setReconnectIntervalMax s val =
     setOption s (#const NN_SOL_SOCKET) (#const NN_RECONNECT_IVL_MAX) (IntOption val)
-
--- | Sets outbound priority for endpoints subsequently added to the socket.
--- This option has no effect on socket types that send messages to all the
--- peers. However, if the socket type sends each message to a single peer
--- (or a limited set of peers), peers with high priority take precedence over
--- peers with low priority.
---
--- Highest priority is 1, lowest priority is 16. Default value is 8.
-sndPrio :: Socket a -> IO Int
-sndPrio s =
-    fromIntegral <$> getOption s (#const NN_SOL_SOCKET) (#const NN_SNDPRIO)
-
--- | Sets outbound priority for endpoints subsequently added to the socket.
--- This option has no effect on socket types that send messages to all the
--- peers. However, if the socket type sends each message to a single peer
--- (or a limited set of peers), peers with high priority take precedence over
--- peers with low priority.
---
--- Highest priority is 1, lowest priority is 16. Default value is 8.
-setSndPrio :: Socket a -> Int -> IO ()
-setSndPrio s val =
-    setOption s (#const NN_SOL_SOCKET) (#const NN_SNDPRIO) (IntOption val)
-
--- | If set to 1, only IPv4 addresses are used. If set to 0, both IPv4
--- and IPv6 addresses are used.
---
--- Default value is 1.
-ipv4Only :: Socket a -> IO Int
-ipv4Only s =
-    fromIntegral <$> getOption s (#const NN_SOL_SOCKET) (#const NN_IPV4ONLY)
-
--- | If set to 1, only IPv4 addresses are used. If set to 0, both IPv4
--- and IPv6 addresses are used.
---
--- Default value is 1.
-setIpv4Only :: Socket a -> Int -> IO ()
-setIpv4Only s val =
-    setOption s (#const NN_SOL_SOCKET) (#const NN_IPV4ONLY) (IntOption val)
 
 -- | This option is defined on the full REQ socket. If reply is not received
 -- in specified amount of milliseconds, the request will be automatically

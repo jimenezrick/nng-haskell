@@ -42,8 +42,6 @@ module Nanomsg.Binary
   , close
   , term
   -- ** Socket option settings
-  , linger
-  , setLinger
   , sndBuf
   , setSndBuf
   , rcvBuf
@@ -52,10 +50,6 @@ module Nanomsg.Binary
   , setReconnectInterval
   , reconnectIntervalMax
   , setReconnectIntervalMax
-  , sndPrio
-  , setSndPrio
-  , ipv4Only
-  , setIpv4Only
   , requestResendInterval
   , setRequestResendInterval
   , surveyorDeadline
