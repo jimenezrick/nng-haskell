@@ -1,4 +1,6 @@
-{-# LANGUAGE ForeignFunctionInterface, DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE ForeignFunctionInterface #-}
+
 -- |
 -- Module:          Nanomsg
 -- Copyright:       (c) 2013 Ivar Nymoen
@@ -771,4 +773,3 @@ tcpNoDelay s =
 setTcpNoDelay :: Socket a -> Int -> IO ()
 setTcpNoDelay s val =
     setOption s (#const NN_TCP) (#const NN_TCP_NODELAY) (IntOption val)
-

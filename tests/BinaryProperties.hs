@@ -1,31 +1,23 @@
-{-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
-module Main where
+
+module BinaryProperties where
 
 import Nanomsg.Binary
-import Test.Framework.TH (defaultMainGenerator)
-import Test.Framework.Providers.QuickCheck2 (testProperty)
 import Test.QuickCheck
 import Test.QuickCheck.Monadic
 import Data.ByteString (ByteString)
 import qualified Data.ByteString.Char8 as C
 import Control.Concurrent (threadDelay)
-import Control.Applicative ( (<$>) )
 import Data.Maybe (catMaybes)
 
 instance Arbitrary ByteString where
     arbitrary = C.pack <$> arbitrary
 
--- dummy test
-prop_reverse :: [Int] -> Bool
-prop_reverse xs =
-    xs == reverse (reverse xs)
-
 type MsgType = PropertyM IO [String]
 
 -- test Pub and Sub sockets
-prop_PubSub :: Property
-prop_PubSub = monadicIO $ do
+prop_PubSubBin :: Property
+prop_PubSubBin = monadicIO $ do
     msgs <- pick arbitrary :: MsgType
     pre $ not (null msgs)
     res <- run $ do
@@ -61,8 +53,8 @@ prop_PubSub = monadicIO $ do
                 return $ a == msg && b == msg && c == msg && d == msg
 
 -- test Pair sockets
-prop_Pair :: Property
-prop_Pair = monadicIO $ do
+prop_PairBin :: Property
+prop_PairBin = monadicIO $ do
     msgs <- pick arbitrary :: MsgType
     let recvS :: (Receiver a) => Socket a -> IO String
         recvS = recv
@@ -82,8 +74,8 @@ prop_Pair = monadicIO $ do
     assert $ and res
 
 -- test Pipeline (Push & Pull) sockets
-prop_Pipeline :: Property
-prop_Pipeline = monadicIO $ do
+prop_PipelineBin :: Property
+prop_PipelineBin = monadicIO $ do
     msgs <- pick arbitrary :: MsgType
     pre $ not (null msgs)
     res <- run $ do
@@ -117,8 +109,8 @@ prop_Pipeline = monadicIO $ do
                 return $ all (== msg) xs && (length xs == 3)
 
 -- test Req and Rep sockets
-prop_ReqRep :: Property
-prop_ReqRep = monadicIO $ do
+prop_ReqRepBin :: Property
+prop_ReqRepBin = monadicIO $ do
     msgs <- pick arbitrary :: MsgType
     let recvS :: (Receiver a) => Socket a -> IO String
         recvS = recv
@@ -137,8 +129,8 @@ prop_ReqRep = monadicIO $ do
     assert $ and res
 
 -- test Bus socket
-prop_Bus :: Property
-prop_Bus = monadicIO $ do
+prop_BusBin :: Property
+prop_BusBin = monadicIO $ do
     msgs <- pick arbitrary :: MsgType
     pre $ not (null msgs)
     res <- run $ do
@@ -173,8 +165,8 @@ prop_Bus = monadicIO $ do
                 f <- recv b2
                 return $ all (== msg) [a, b, c, d, e, f]
 
-prop_TestOptions :: Property
-prop_TestOptions = monadicIO $ do
+prop_TestOptionsBin :: Property
+prop_TestOptionsBin = monadicIO $ do
     res <- run $ do
         req <- socket Req
         _ <- bind req "tcp://*:5560"
@@ -211,7 +203,3 @@ prop_TestOptions = monadicIO $ do
         return [v1 == 1, v2 == 0, v3 == 30000, v4 == 0, v5 == 1, v6 == 7,
             v7 == 50, v8 == 400, v9 == 200000, v10 == 150000, v11 == 500, v12 == 2000]
     assert $ and res
-
-main :: IO ()
-main = $defaultMainGenerator
-

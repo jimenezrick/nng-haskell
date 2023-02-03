@@ -1,11 +1,9 @@
-{-# LANGUAGE ForeignFunctionInterface, DeriveDataTypeable #-}
 -- |
 -- Module:          Nanomsg.Binary
 --
 -- This module offers a thin serialization layer ("Binary" based)
 -- over @'send'@ and @'receive'@. You just need to import 
 -- @Nanomsg.Binary@ instead of @Nanomsg@.
-
 module Nanomsg.Binary
   (
   -- * Types
@@ -90,4 +88,3 @@ recv'
   => Socket s
   -> IO (Maybe dat)
 recv' s = fmap (decode . fromStrict) <$> NM.recv' s
-
