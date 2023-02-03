@@ -97,10 +97,12 @@ prop_Pipeline = monadicIO $ do
                 send push msg
                 threadDelay 1000
                 a <- recv' pull1
-                b <- recv' pull1
+                b <- recv' pull2
+                threadDelay 1000
                 c <- recv' pull1
                 d <- recv' pull2
-                e <- recv' pull2
+                threadDelay 1000
+                e <- recv' pull1
                 f <- recv' pull2
                 let xs = catMaybes [a, b, c, d, e, f]
                 return $ all (== msg) xs && (length xs == 3)
